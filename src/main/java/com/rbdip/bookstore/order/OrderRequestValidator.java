@@ -1,0 +1,30 @@
+package com.rbdip.bookstore.order;
+
+import org.springframework.stereotype.Component;
+
+/** Проверяет данные заказа и нормализует количество товара. */
+@Component
+public class OrderRequestValidator {
+
+    public void validate(CreateOrderRequest request) {
+        requireText(request.customerFullName(), "customerFullName is required");
+        requireText(request.customerAddress(), "customerAddress is required");
+        if (request.items() == null || request.items().isEmpty()) {
+            throw new IllegalArgumentException("order must contain at least one item");
+        }
+    }
+
+    public int resolveQuantity(Integer requestedQuantity) {
+        int quantity = requestedQuantity == null ? 1 : requestedQuantity;
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("quantity must be positive");
+        }
+        return quantity;
+    }
+
+    private void requireText(String value, String errorMessage) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(errorMessage);
+        }
+    }
+}
