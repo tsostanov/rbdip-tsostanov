@@ -11,6 +11,9 @@ import jakarta.persistence.Table;
 @Table(name = "customers")
 public class Customer {
 
+    private static final int ADDRESS_MAX_LENGTH = 500;
+    private static final int PHONE_MAX_LENGTH = 50;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,10 +21,10 @@ public class Customer {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
-    @Column(length = 500)
+    @Column(length = ADDRESS_MAX_LENGTH)
     private String address;
 
-    @Column(length = 50)
+    @Column(length = PHONE_MAX_LENGTH)
     private String phone;
 
     protected Customer() {
