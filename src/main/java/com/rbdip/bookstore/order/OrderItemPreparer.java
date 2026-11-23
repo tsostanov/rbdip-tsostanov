@@ -25,6 +25,6 @@ public class OrderItemPreparer {
         Product product = productRepository.findById(item.productId())
                 .orElseThrow(() -> new IllegalArgumentException("product " + item.productId() + " not found"));
         int quantity = validator.resolveQuantity(item.quantity());
-        return new PreparedOrderItem(product.getName(), product.getPrice(), quantity);
+        return new PreparedOrderItem(product, quantity);
     }
 }

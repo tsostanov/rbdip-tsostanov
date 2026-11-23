@@ -77,11 +77,14 @@ class OrderCreationTest extends AbstractIntegrationTest {
         assertThat(response.getBody()).containsEntry("status", "new");
         assertThat(jdbcTemplate.queryForList("SELECT quantity FROM order_items ORDER BY id", Integer.class))
                 .containsExactly(1, 2);
-        assertThat(jdbcTemplate.queryForList("SELECT product_name FROM order_items ORDER BY id", String.class))
+        assertThat(jdbcTemplate.queryForList(
+                "SELECT p.name FROM order_items i JOIN products p ON p.id = i.product_id ORDER BY i.id", String.class))
                 .containsExactly("Refactoring", "Refactoring");
-        assertThat(jdbcTemplate.queryForList("SELECT product_price FROM order_items ORDER BY id", String.class))
+        assertThat(jdbcTemplate.queryForList(
+                "SELECT p.price FROM order_items i JOIN products p ON p.id = i.product_id ORDER BY i.id", String.class))
                 .containsExactly("100.00", "100.00");
-        assertThat(jdbcTemplate.queryForObject("SELECT customer_full_name FROM orders", String.class))
+        assertThat(jdbcTemplate.queryForObject(
+                "SELECT c.full_name FROM orders o JOIN customers c ON c.id = o.customer_id", String.class))
                 .isEqualTo("Anna");
     }
 
