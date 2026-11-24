@@ -2,6 +2,8 @@ package com.rbdip.bookstore.order;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.rbdip.bookstore.customer.Customer;
+import com.rbdip.bookstore.customer.CustomerRepository;
 import com.rbdip.bookstore.reference.AbstractIntegrationTest;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,9 @@ class NormalizedOrderTest extends AbstractIntegrationTest {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
+    @Autowired
+    private CustomerRepository customerRepository;
+
     @Test
     void reusesCustomerWithIdenticalContactsIncludingNullPhone() {
         Long productId = createProduct();
@@ -28,6 +33,10 @@ class NormalizedOrderTest extends AbstractIntegrationTest {
         assertThat(jdbcTemplate.queryForObject("SELECT count(*) FROM orders", Long.class)).isEqualTo(2);
         assertThat(jdbcTemplate.queryForObject("SELECT count(DISTINCT customer_id) FROM orders", Long.class))
                 .isEqualTo(1);
+        Customer customer = customerRepository.findByFullNameAndAddressAndPhone("Anna", "Moscow", null)
+                .orElseThrow();
+        assertThat(jdbcTemplate.queryForList("SELECT customer_id FROM orders", Long.class))
+                .containsOnly(customer.getId());
     }
 
     @Test
